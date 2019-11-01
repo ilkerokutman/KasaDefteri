@@ -45,7 +45,10 @@ public class HomeActivity  extends AppCompatActivity {
         DatabaseHelper db = new DatabaseHelper(this);
 
         // yukarda tanımlanan textview içine burada yeni değer veriyoruz
-        gunlukGider.setText(String.format("Günlük giderimiz %d TL", db.getExpenseSum()));
+
+        double giderToplam = db.getExpenseSum();
+        String giderToplamMetni = "Günlük gider " + giderToplam + " TL";
+        gunlukGider.setText(giderToplamMetni);
     }
 
     // ikinci sayfayi acan fonksiyon
