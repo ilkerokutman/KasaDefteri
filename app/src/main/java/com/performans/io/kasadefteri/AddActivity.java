@@ -64,7 +64,20 @@ public class AddActivity extends AppCompatActivity {
 
 
         // ekrana yazdir
-        Toast.makeText(this, description + "\n" + String.valueOf(amount) + "\n" + (isExpense ? "gider" : "gelir"), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, description + "\n" + String.valueOf(amount) + "\n" + (isExpense ? "gider" : "gelir"), Toast.LENGTH_SHORT).show();
+
+
+        ExpenseModel expenseModel = new ExpenseModel(amount, description, isExpense);
+
+        DatabaseHelper db = new DatabaseHelper(this);
+
+        db.addRecord(expenseModel);
+        Toast.makeText(this, "kayıt eklendi", Toast.LENGTH_SHORT).show();
+
+        finish();
+
+
+
 
     }
 
