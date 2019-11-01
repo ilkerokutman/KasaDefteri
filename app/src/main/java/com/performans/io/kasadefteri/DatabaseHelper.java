@@ -161,8 +161,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Cursor cursor = db.query(
                     "_cash",
                     new String[]{"_amount"},
-                    "_amount < ?",
-                    new String[]{"0"},
+                    "_isExpense = ?",
+                    new String[]{"1"},
                     null,
                     null,
                     null
