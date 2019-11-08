@@ -191,4 +191,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return result;
     }
+
+    public double getIncomeSum(){
+        SQLiteDatabase db = null;
+        double result = 0;
+        try {
+            beginReadLock();
+            db = this.getReadableDatabase();
+            Cursor cursor = db.query(
+                    "_cash",
+                    new String[]{"_amount"},
+                    "_isExpense = ?",
+                    new String[]{"0"},
+                    null,
+                    null,
+                    null
+            );
+            if (cursor != null && !cursor.isClosed() && cursor.moveToFirst()) {
+                do {
+                    result += cursor.getDouble(cursor.getColumnIndex("_amount"));
+                } while (cursor.moveToNext());
+            }
+            assert cursor != null;
+            cursor.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (db != null) {
+                try {
+                    if (db.isOpen()) {
+                        db.close();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                endReadLock();
+            }
+        }
+
+        return result;
+    }
 }

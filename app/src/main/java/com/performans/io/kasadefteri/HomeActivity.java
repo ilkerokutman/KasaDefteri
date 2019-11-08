@@ -4,14 +4,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.ArrayList;
 
 public class HomeActivity  extends AppCompatActivity {
 
     //bu text alanını yukarda tanımlarsak her yerde kullanırız
     TextView gunlukGider;
+    TextView gunlukGelir;
+    ListView listView;
 
 
     @Override
@@ -35,6 +40,8 @@ public class HomeActivity  extends AppCompatActivity {
 
         // yukardad tanımlanan textview i sayfaya çağırıyoruz
          gunlukGider = findViewById(R.id.txtGunlukGider);
+         gunlukGelir = findViewById(R.id.txtGunlukGelir);
+         listView = findViewById(R.id.liste);
 
     }
 
@@ -49,11 +56,27 @@ public class HomeActivity  extends AppCompatActivity {
         double giderToplam = db.getExpenseSum();
         String giderToplamMetni = "Günlük gider " + giderToplam + " TL";
         gunlukGider.setText(giderToplamMetni);
+
+        double gelirToplam = db.getIncomeSum();
+        String gelirToplamMetni = "Günlük gelir " + gelirToplam + " TL";
+        gunlukGelir.setText(gelirToplamMetni);
+
+
+
+        //burada listeyi doldur
+
     }
 
     // ikinci sayfayi acan fonksiyon
     public void openAddPage() {
         Intent intent = new Intent(HomeActivity.this, AddActivity.class);
         startActivity(intent);
+    }
+
+    public void listExpenses(){
+        DatabaseHelper db = new DatabaseHelper(this);
+        ArrayList<ExpenseModel> myList = db.getAllRecords();
+
+
     }
 }
