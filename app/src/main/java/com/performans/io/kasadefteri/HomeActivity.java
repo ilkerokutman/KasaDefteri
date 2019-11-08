@@ -2,12 +2,15 @@ package com.performans.io.kasadefteri;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
@@ -16,7 +19,8 @@ public class HomeActivity  extends AppCompatActivity {
     //bu text alanını yukarda tanımlarsak her yerde kullanırız
     TextView gunlukGider;
     TextView gunlukGelir;
-    ListView listView;
+    TextView toplam;
+    RecyclerView recyclerView;
 
 
     @Override
@@ -41,7 +45,13 @@ public class HomeActivity  extends AppCompatActivity {
         // yukardad tanımlanan textview i sayfaya çağırıyoruz
          gunlukGider = findViewById(R.id.txtGunlukGider);
          gunlukGelir = findViewById(R.id.txtGunlukGelir);
-         listView = findViewById(R.id.liste);
+         toplam = findViewById(R.id.txtToplam);
+
+
+        recyclerView = findViewById(R.id.liste);
+
+        LinearLayoutManager layoutManager= new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
 
     }
 
@@ -50,20 +60,27 @@ public class HomeActivity  extends AppCompatActivity {
         super.onResume();
         //veritabanı sadece bu onResume içerisinde lazım olduğu için burada tanımladık
         DatabaseHelper db = new DatabaseHelper(this);
-
+        Log.d("aaaa", "bbbb");
         // yukarda tanımlanan textview içine burada yeni değer veriyoruz
 
         double giderToplam = db.getExpenseSum();
+        Log.d("aaaa", "gider toplamı : " + giderToplam);
         String giderToplamMetni = "Günlük gider " + giderToplam + " TL";
         gunlukGider.setText(giderToplamMetni);
 
+        Log.d("aaaa", "bbbb 1");
         double gelirToplam = db.getIncomeSum();
         String gelirToplamMetni = "Günlük gelir " + gelirToplam + " TL";
         gunlukGelir.setText(gelirToplamMetni);
 
-
+        toplam.setText("Elde Kalan: " + String.valueOf(gelirToplam - giderToplam));
 
         //burada listeyi doldur
+        Log.d("liste", "doldurulacak");
+        listExpenses();
+
+        Log.d("liste", "dolduruldu");
+        Log.d("aaaa1", "bbbb 4");
 
     }
 
@@ -76,7 +93,8 @@ public class HomeActivity  extends AppCompatActivity {
     public void listExpenses(){
         DatabaseHelper db = new DatabaseHelper(this);
         ArrayList<ExpenseModel> myList = db.getAllRecords();
-
-
+        MyListAdapter adapter = new MyListAdapter(this, myList);
+        recyclerView.setAdapter(adapter);
+        Log.d("liste", "listede " + myList.size() + " kadar satır var");
     }
 }

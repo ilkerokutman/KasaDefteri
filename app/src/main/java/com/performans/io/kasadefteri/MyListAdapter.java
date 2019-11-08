@@ -1,6 +1,7 @@
 package com.performans.io.kasadefteri;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,8 +10,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
@@ -20,9 +24,9 @@ import java.util.List;
 public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.MyViewHolder> {
 
     private Context mContext;
-    private List<TaskModel> itemList;
+    private List<ExpenseModel> itemList;
 
-    public TaskListAdapter(Context mContext, List<TaskModel> itemList) {
+    public MyListAdapter(Context mContext, List<ExpenseModel> itemList) {
         this.mContext = mContext;
         this.itemList = itemList;
     }
@@ -31,27 +35,41 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.MyViewHold
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_task, parent, false);
+                .inflate(R.layout.item_expense, parent, false);
         return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final MyListAdapter.MyViewHolder holder,
                                  final int position) {
-        final TaskModel item = itemList.get(position);
-        holder.clientName.setText(item.getClientFullName() + " #" + item.getStatusId());
-        holder.clientPhone.setText(item.getClientNormalizedPhone());
-        holder.vehicleInfo.setText(item.getVehicleInfo());
-        Picasso.get()
-                .load(item.isOngoingTask() ? R.drawable.icon_task_active : R.drawable.icon_task_idle)
-                .into(holder.taskIcon);
-        holder.layout.setOnClickListener(v -> {
-            Intent intent = new Intent(mContext, TaskDetailActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString(Constants.BKEY_ID, item.getId());
-            intent.putExtras(bundle);
-            mContext.startActivity(intent);
+        final ExpenseModel item = itemList.get(position);
+
+        holder.itemdesc.setText(item.getDescription());
+        holder.itemamount.setText(String.valueOf(item.getAmount()));
+        holder.itemdate.setText(item.getDate());
+        holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle("Dikkat");
+                builder.setMessage("bunu silmek istediğinizden emin misiniz?");
+                builder.setNegativeButton("HAYIR", null);
+                builder.setPositiveButton("SİL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        DatabaseHelper db = new DatabaseHelper(mContext);
+                        db.deleteRecord(item.getId());
+                        ((HomeActivity)mContext).onResume();
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+                return false;
+            }
         });
+        
     }
 
     @Override
@@ -60,17 +78,17 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.MyViewHold
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView clientName, clientPhone, vehicleInfo;
-        public RelativeLayout layout;
-        ImageView taskIcon;
+        TextView itemdate, itemdesc, itemamount;
+        ImageView itemicon;
+        RelativeLayout layout;
 
         public MyViewHolder(View view) {
             super(view);
-            layout = view.findViewById(R.id.taskitem_layout);
-            clientName = view.findViewById(R.id.taskitem_clientName);
-            clientPhone = view.findViewById(R.id.taskitem_clientPhone);
-            vehicleInfo = view.findViewById(R.id.taskitem_vehicleInfo);
-            taskIcon = view.findViewById(R.id.taskitem_icon);
+            itemdate = view.findViewById(R.id.item_date);
+            itemamount = view.findViewById(R.id.item_amount);
+            itemdesc = view.findViewById(R.id.item_desc);
+            itemicon = view.findViewById(R.id.item_icon);
+            layout = view.findViewById(R.id.item_layout);
         }
     }
 }

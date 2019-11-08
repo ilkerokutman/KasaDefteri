@@ -3,7 +3,17 @@
 android:orientation="vertical" android:layout_width="match_parent"
 android:layout_height="match_parent">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:src="@drawable/para_tasarrufu"
+        android:scaleType="centerCrop"/>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/liste"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
 <TextView
     android:id="@+id/txtGunlukGelir"
@@ -17,18 +27,28 @@ android:layout_height="match_parent">
     android:layout_height="wrap_content"
     android:text="Gunluk Gider" />
 
-<androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/liste"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/txtToplam"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 
 
 
-<Button
-    android:id="@+id/btnAdd"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="ekle" />
+    <Button
+        android:id="@+id/btnAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/button_background"
+        android:textColor="@color/colorPrimary"
+        android:drawableStart="@drawable/ic_plus_white"
+        android:drawablePadding="0dp"
+        android:textSize="40dp"
+        android:padding="10dp"
+        android:layout_gravity="center"
+        android:text="ekle" />
+
+
 </LinearLayout>
